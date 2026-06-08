@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.config
+package uk.gov.hmrc.sdecthreadinfoapi.service
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadInformation
 
-@Singleton
-class AppConfig @Inject() (config: Configuration):
+import scala.concurrent.Future
 
-    val appName: String = config.get[String]("appName")
+trait ThreadInformationServiceAlgebra {
+
+  def getThreadInfoByThreadId(threadId: Long): Future[ThreadInformation]
+
+}
