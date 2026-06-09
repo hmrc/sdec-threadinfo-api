@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.config
+package uk.gov.hmrc.sdecthreadinfoapi.model
 
-import play.api.Configuration
+import play.api.libs.json.{Json, OWrites, Reads}
 
-import javax.inject.{Inject, Singleton}
+case class ThreadInformation(
+    threadId: Long,
+    staffId: Long,
+    email: String
+)
 
-@Singleton
-class AppConfig @Inject() (config: Configuration):
+object ThreadInformation {
+  given threadInfoSerializer: OWrites[ThreadInformation] =
+    Json.writes[ThreadInformation]
 
-    val appName: String = config.get[String]("appName")
+  given threadInfoReader: Reads[ThreadInformation] = Json.reads[ThreadInformation]
+}

@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.config
+package uk.gov.hmrc.sdecthreadinfoapi.service
 
-import play.api.Configuration
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-import javax.inject.{Inject, Singleton}
+class ThreadInformationServiceTest
+    extends AnyFunSuite
+    with Matchers
+    with ScalaFutures {
 
-@Singleton
-class AppConfig @Inject() (config: Configuration):
+  private val sut = new ThreadInformationService()
 
-    val appName: String = config.get[String]("appName")
+  test("It should return dummy data by given ID") {
+    val result = sut.getThreadInfoByThreadId(4)
+    whenReady(result) { resp =>
+      resp.threadId shouldBe 4
+    }
+  }
+}
