@@ -40,6 +40,15 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     compilerSettings
   )
+  .settings(
+    Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
+    Test / unmanagedSourceDirectories := (Test / baseDirectory)(base =>
+      Seq(base / "test", base / "test-common")
+    ).value,
+    Test / unmanagedResourceDirectories := Seq(
+      baseDirectory.value / "test-resources"
+    )
+  )
 
 lazy val it = project
   .enablePlugins(PlayScala)
