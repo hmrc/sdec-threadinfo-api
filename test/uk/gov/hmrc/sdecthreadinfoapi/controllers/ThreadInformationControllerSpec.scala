@@ -19,8 +19,8 @@ package uk.gov.hmrc.sdecthreadinfoapi.controllers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
-import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers.*
+import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadInformation
 import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadInformationServiceAlgebra
 
