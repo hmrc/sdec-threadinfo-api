@@ -33,7 +33,6 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageMinimumStmtTotal := 90,
     ScoverageKeys.coverageFailOnMinimum    := true,
     ScoverageKeys.coverageHighlighting     := true,
-    ScoverageKeys.coverageDataDir          := target.value,
     Compile / scalafmtOnCompile            := true,
     Test / scalafmtOnCompile               := true,
     PlayKeys.playDefaultPort               := 4001,
