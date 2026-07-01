@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.repo
+package uk.gov.hmrc.sdecthreadinfoapi.stubs
 
 import com.github.blemale.scaffeine.{Cache, Scaffeine}
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
 
 import javax.inject.Singleton
+import scala.concurrent.Future
 import scala.concurrent.duration.*
 
 @Singleton
-class ThreadReferenceRepository {
+class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
 
   private val threadReferenceCache: Cache[String, ThreadReference] = Scaffeine()
     .recordStats()
@@ -39,9 +41,15 @@ class ThreadReferenceRepository {
     insertThreadReference(ThreadReference("3", "THREAD-003"))
   }
 
-  def insertThreadReference(threadRef: ThreadReference): Unit =
+  def insertThreadReference(threadRef: ThreadReference): Future[Unit] = {
     threadReferenceCache.put(threadRef.id, threadRef)
+    Future.successful(())
+  }
 
-  def getThreadReference(id: String): Option[ThreadReference] =
-    threadReferenceCache.getIfPresent(id)
+  override def getByThreadReference(id: String): Future[ThreadReference] =
+    threadReferenceCache
+      .getIfPresent(id)
+      .fold(Future.failed(new RuntimeException("object does not exist")))(tr =>
+        Future.successful(tr)
+      )
 }

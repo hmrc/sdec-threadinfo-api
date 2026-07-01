@@ -22,7 +22,7 @@ import play.api.http.Status
 import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
-import uk.gov.hmrc.sdecthreadinfoapi.repo.ThreadReferenceRepository
+import uk.gov.hmrc.sdecthreadinfoapi.stubs.ThreadReferenceRepository
 
 class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
 

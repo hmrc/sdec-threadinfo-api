@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.repo
+package uk.gov.hmrc.sdecthreadinfoapi.repository
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapi.stubs.ThreadReferenceRepository
 
 class ThreadReferenceRepositorySpec extends AnyWordSpec with Matchers {
 

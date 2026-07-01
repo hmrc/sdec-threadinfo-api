@@ -25,7 +25,7 @@ class ThreadInformationServiceTest
     with Matchers
     with ScalaFutures {
 
-  private val sut = new ThreadInformationService()
+  private val sut = new ThreadReferenceService()
 
   test("It should return dummy data by given ID") {
     val result = sut.getThreadInfoByThreadId(4)

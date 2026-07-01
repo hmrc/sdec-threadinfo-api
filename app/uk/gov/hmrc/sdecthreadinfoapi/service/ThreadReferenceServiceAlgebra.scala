@@ -16,21 +16,12 @@
 
 package uk.gov.hmrc.sdecthreadinfoapi.service
 
-import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadInformation
+import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 
-import javax.inject.Singleton
 import scala.concurrent.Future
 
-@Singleton
-class ThreadInformationService extends ThreadInformationServiceAlgebra {
+trait ThreadReferenceServiceAlgebra {
 
-  def getThreadInfoByThreadId(threadId: Long): Future[ThreadInformation] =
-    Future.successful(
-      ThreadInformation(
-        threadId = threadId,
-        staffId = threadId + 1000L,
-        email = s"staff-$threadId@hmrc.gov.uk"
-      )
-    )
+  def getThreadInfoByThreadId(threadId: String): Future[ThreadReference]
 
 }
