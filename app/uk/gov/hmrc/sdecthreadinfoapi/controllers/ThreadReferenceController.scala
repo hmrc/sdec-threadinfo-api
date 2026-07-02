@@ -25,13 +25,14 @@ import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
 
 import javax.inject.Singleton
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ThreadReferenceController @Inject() (
     cc: ControllerComponents,
     threadReferenceService: ThreadReferenceServiceAlgebra
-) extends BackendController(cc) {
+)(implicit ec: ExecutionContext)
+    extends BackendController(cc) {
 
   def getThreadReference(threadId: String): Action[AnyContent] = {
     Action.async { implicit request =>

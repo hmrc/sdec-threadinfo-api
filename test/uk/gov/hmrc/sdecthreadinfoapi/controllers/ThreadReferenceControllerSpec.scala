@@ -27,6 +27,7 @@ import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
 import uk.gov.hmrc.sdecthreadinfoapi.utils.ThreadStatusConstants
 
 import java.time.{LocalDate, LocalDateTime}
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
@@ -51,7 +52,7 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
     new ThreadReferenceController(
       Helpers.stubControllerComponents(),
       threadReferenceService
-    )
+    )(ExecutionContext.global)
 
   "GET /thread-reference/1" should {
     "return 200" in {
