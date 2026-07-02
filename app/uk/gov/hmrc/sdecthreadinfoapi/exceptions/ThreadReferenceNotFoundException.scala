@@ -14,23 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.service
+package uk.gov.hmrc.sdecthreadinfoapi.exceptions
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.matchers.should.Matchers
-
-class ThreadInformationServiceTest
-    extends AnyFunSuite
-    with Matchers
-    with ScalaFutures {
-
-  private val sut = new ThreadReferenceService()
-
-  test("It should return dummy data by given ID") {
-    val result = sut.getThreadInfoByThreadId(4)
-    whenReady(result) { resp =>
-      resp.threadId shouldBe 4
-    }
-  }
-}
+case class ThreadReferenceNotFoundException(id: String)
+    extends RuntimeException(s"Thread reference [$id] not found")

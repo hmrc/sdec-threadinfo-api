@@ -17,9 +17,12 @@
 package uk.gov.hmrc.sdecthreadinfoapi.stubs
 
 import com.github.blemale.scaffeine.{Cache, Scaffeine}
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.ThreadReferenceNotFoundException
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
+import uk.gov.hmrc.sdecthreadinfoapi.utils.ThreadStatusConstants
 
+import java.time.{LocalDate, LocalDateTime}
 import javax.inject.Singleton
 import scala.concurrent.Future
 import scala.concurrent.duration.*
@@ -36,9 +39,29 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
   seedDummyData()
 
   private def seedDummyData(): Unit = {
-    insertThreadReference(ThreadReference("1", "THREAD-001"))
-    insertThreadReference(ThreadReference("2", "THREAD-002"))
-    insertThreadReference(ThreadReference("3", "THREAD-003"))
+    insertThreadReference(
+      ThreadReference(
+        id = "1",
+        threadReference = "THREAD-001",
+        status = ThreadStatusConstants.ACTIVE,
+        createdTimeStamp = LocalDateTime.now().minusDays(2),
+        lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
+        threadExpiryDate = LocalDate.now().plusDays(28),
+        associatedCaseReference = "CASE-001"
+      )
+    )
+
+    insertThreadReference(
+      ThreadReference(
+        id = "2",
+        threadReference = "THREAD-002",
+        status = ThreadStatusConstants.DRAFT,
+        createdTimeStamp = LocalDateTime.now().minusDays(1),
+        lastUpdatedTimeStamp = LocalDateTime.now().minusHours(2),
+        threadExpiryDate = LocalDate.now().plusDays(28),
+        associatedCaseReference = "CASE-002"
+      )
+    )
   }
 
   def insertThreadReference(threadRef: ThreadReference): Future[Unit] = {
@@ -49,7 +72,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
   override def getByThreadReference(id: String): Future[ThreadReference] =
     threadReferenceCache
       .getIfPresent(id)
-      .fold(Future.failed(new RuntimeException("object does not exist")))(tr =>
-        Future.successful(tr)
-      )
+      .fold(
+        Future.failed(ThreadReferenceNotFoundException(id))
+      )(Future.successful)
 }

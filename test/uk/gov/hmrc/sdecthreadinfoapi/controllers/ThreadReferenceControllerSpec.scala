@@ -21,39 +21,63 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
 import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.ThreadReferenceNotFoundException
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
-import uk.gov.hmrc.sdecthreadinfoapi.stubs.ThreadReferenceRepository
+import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
+import uk.gov.hmrc.sdecthreadinfoapi.utils.ThreadStatusConstants
+
+import java.time.{LocalDate, LocalDateTime}
+import scala.concurrent.Future
 
 class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
 
-  private val threadReferenceRepository = new ThreadReferenceRepository
+  private val threadReference = ThreadReference(
+    id = "1",
+    threadReference = "THREAD-001",
+    status = ThreadStatusConstants.ACTIVE,
+    createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
+    lastUpdatedTimeStamp = LocalDateTime.parse("2026-07-02T08:05:23"),
+    threadExpiryDate = LocalDate.parse("2026-07-30"),
+    associatedCaseReference = "CASE-001"
+  )
+
+  private val threadReferenceService = new ThreadReferenceServiceAlgebra {
+    override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] =
+      if (threadId == "1") Future.successful(threadReference)
+      else Future.failed(ThreadReferenceNotFoundException(threadId))
+  }
 
   private val controller =
     new ThreadReferenceController(
       Helpers.stubControllerComponents(),
-      threadReferenceRepository
+      threadReferenceService
     )
 
-  "GET /thread-reference/1" should:
-      "return 200" in:
-          val fakeRequest = FakeRequest("GET", "/thread-reference/1")
-          val result      = controller.getThreadReference("1")(fakeRequest)
+  "GET /thread-reference/1" should {
+    "return 200" in {
+      val fakeRequest = FakeRequest("GET", "/thread-reference/1")
+      val result      = controller.getThreadReference("1")(fakeRequest)
 
-          status(result) shouldBe Status.OK
+      status(result) shouldBe Status.OK
 
-          val json           = contentAsJson(result)
-          val returnedObject = json.as[ThreadReference]
+      val json           = contentAsJson(result)
+      val returnedObject = json.as[ThreadReference]
 
-          returnedObject shouldBe ThreadReference("1", "THREAD-001")
+      returnedObject shouldBe threadReference
+    }
+  }
 
-  "GET /thread/999" should:
-      "return 404" in:
-          val fakeRequest = FakeRequest("GET", "/thread-reference/999")
-          val result      = controller.getThreadReference("999")(fakeRequest)
+  "GET /thread-reference/999" should {
+    "return 404" in {
+      val fakeRequest = FakeRequest("GET", "/thread-reference/999")
+      val result      = controller.getThreadReference("999")(fakeRequest)
 
-          status(result) shouldBe Status.NOT_FOUND
+      status(result) shouldBe Status.NOT_FOUND
 
-          val json = contentAsJson(result)
-          (json \ "message")
-            .as[String] shouldBe "Thread reference not found for id: 999"
+      val json = contentAsJson(result)
+
+      (json \ "message").as[String] shouldBe
+        "Thread reference [999] not found"
+    }
+  }
 }

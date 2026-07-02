@@ -19,7 +19,10 @@ package uk.gov.hmrc.sdecthreadinfoapi
 import play.api.inject.{Binding, Module as AppModule}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.sdecthreadinfoapi.repository.*
-import uk.gov.hmrc.sdecthreadinfoapi.service.{ThreadReferenceService, ThreadReferenceServiceAlgebra}
+import uk.gov.hmrc.sdecthreadinfoapi.service.{
+  ThreadReferenceService,
+  ThreadReferenceServiceAlgebra
+}
 import uk.gov.hmrc.sdecthreadinfoapi.stubs.ThreadReferenceRepository
 
 import java.time.Clock

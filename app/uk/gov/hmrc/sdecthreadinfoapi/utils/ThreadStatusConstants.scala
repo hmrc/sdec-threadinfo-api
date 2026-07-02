@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.model
+package uk.gov.hmrc.sdecthreadinfoapi.utils
 
-import play.api.libs.json.{Format, Json}
-
-import java.time.{LocalDate, LocalDateTime}
-
-case class ThreadReference(
-    id: String,
-    threadReference: String,
-    status: String,
-    createdTimeStamp: LocalDateTime,
-    lastUpdatedTimeStamp: LocalDateTime,
-    threadExpiryDate: LocalDate,
-    associatedCaseReference: String
-)
-
-object ThreadReference {
-  implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
+object ThreadStatusConstants {
+  val DRAFT    = "Draft"
+  val ACTIVE   = "Active"
+  val CLOSED   = "Closed"
+  val ARCHIVED = "Archived"
 }
