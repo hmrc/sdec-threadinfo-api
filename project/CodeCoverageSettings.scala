@@ -8,6 +8,7 @@ object CodeCoverageSettings {
     "Reverse.*",
     ".*.Module",
     ".*.model.*",
+    ".*.stubs.*",
     ".*.config.*",
     "uk.gov.hmrc.BuildInfo",
     "app.*",

@@ -20,22 +20,28 @@ import jakarta.inject.Inject
 import play.api.libs.json.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadInformationServiceAlgebra
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.ThreadReferenceNotFoundException
+import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
 
 import javax.inject.Singleton
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class ThreadInformationController @Inject() (
+class ThreadReferenceController @Inject() (
     cc: ControllerComponents,
-    threadService: ThreadInformationServiceAlgebra
-) extends BackendController(cc) {
+    threadReferenceService: ThreadReferenceServiceAlgebra
+)(implicit ec: ExecutionContext)
+    extends BackendController(cc) {
 
-  def getThreadInformation(threadId: Long): Action[AnyContent] = {
+  def getThreadReference(threadId: String): Action[AnyContent] = {
     Action.async { implicit request =>
-      threadService
+      threadReferenceService
         .getThreadInfoByThreadId(threadId)
-        .map(tid => Ok(Json.toJson(tid)))
+        .map(tr => Ok(Json.toJson(tr)))
+        .recover { case e: ThreadReferenceNotFoundException =>
+          NotFound(Json.obj("message" -> e.getMessage))
+        }
     }
   }
 }

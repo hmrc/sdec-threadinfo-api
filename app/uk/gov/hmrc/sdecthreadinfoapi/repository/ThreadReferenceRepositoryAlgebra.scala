@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.model
+package uk.gov.hmrc.sdecthreadinfoapi.repository
 
-import play.api.libs.json.{Json, OWrites, Reads}
+import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 
-case class ThreadInformation(
-    threadId: Long,
-    staffId: Long,
-    email: String
-)
+import scala.concurrent.Future
 
-object ThreadInformation {
-  given threadInfoSerializer: OWrites[ThreadInformation] =
-    Json.writes[ThreadInformation]
+trait ThreadReferenceRepositoryAlgebra {
 
-  given threadInfoReader: Reads[ThreadInformation] = Json.reads[ThreadInformation]
+  def insertThreadReference(threadRef: ThreadReference): Future[Unit]
+
+  def getByThreadReference(id: String): Future[ThreadReference]
 }

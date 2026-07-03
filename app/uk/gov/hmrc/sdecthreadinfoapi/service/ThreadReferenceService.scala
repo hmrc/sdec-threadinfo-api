@@ -16,21 +16,17 @@
 
 package uk.gov.hmrc.sdecthreadinfoapi.service
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.funsuite.AnyFunSuite
-import org.scalatest.matchers.should.Matchers
+import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
 
-class ThreadInformationServiceTest
-    extends AnyFunSuite
-    with Matchers
-    with ScalaFutures {
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
-  private val sut = new ThreadInformationService()
+@Singleton
+class ThreadReferenceService @Inject() (
+    threadReferenceRepository: ThreadReferenceRepositoryAlgebra
+) extends ThreadReferenceServiceAlgebra {
 
-  test("It should return dummy data by given ID") {
-    val result = sut.getThreadInfoByThreadId(4)
-    whenReady(result) { resp =>
-      resp.threadId shouldBe 4
-    }
-  }
+  def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] =
+    threadReferenceRepository.getByThreadReference(threadId)
 }

@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.service
+package uk.gov.hmrc.sdecthreadinfoapi.model
 
-import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadInformation
+import play.api.libs.json.{Format, Json}
 
-import javax.inject.Singleton
-import scala.concurrent.Future
+import java.time.{LocalDate, LocalDateTime}
 
-@Singleton
-class ThreadInformationService extends ThreadInformationServiceAlgebra {
+case class ThreadReference(
+    id: String,
+    threadReference: String,
+    status: ThreadStatus,
+    createdTimeStamp: LocalDateTime,
+    lastUpdatedTimeStamp: LocalDateTime,
+    threadExpiryDate: LocalDate,
+    associatedCaseReference: String
+)
 
-  def getThreadInfoByThreadId(threadId: Long): Future[ThreadInformation] =
-    Future.successful(
-      ThreadInformation(
-        threadId = threadId,
-        staffId = threadId + 1000L,
-        email = s"staff-$threadId@hmrc.gov.uk"
-      )
-    )
-
+object ThreadReference {
+  implicit val format: Format[ThreadReference] = Json.format[ThreadReference]
 }
