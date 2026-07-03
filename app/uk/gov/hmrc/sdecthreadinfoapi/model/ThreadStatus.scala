@@ -14,11 +14,29 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.sdecthreadinfoapi.utils
+package uk.gov.hmrc.sdecthreadinfoapi.model
 
-object ThreadStatusConstants {
-  val DRAFT    = "Draft"
-  val ACTIVE   = "Active"
-  val CLOSED   = "Closed"
-  val ARCHIVED = "Archived"
+import play.api.libs.json.*
+
+enum ThreadStatus {
+  case Draft
+  case Active
+  case Closed
+  case Archived
+}
+
+object ThreadStatus {
+
+  given Format[ThreadStatus] = Format(
+    Reads {
+      case JsString(value) =>
+        ThreadStatus.values
+          .find(_.toString == value)
+          .map(JsSuccess(_))
+          .getOrElse(JsError(s"Unknown ThreadStatus: $value"))
+
+      case _ => JsError("ThreadStatus must be a string")
+    },
+    Writes(status => JsString(status.toString))
+  )
 }

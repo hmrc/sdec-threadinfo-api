@@ -18,9 +18,8 @@ package uk.gov.hmrc.sdecthreadinfoapi.stubs
 
 import com.github.blemale.scaffeine.{Cache, Scaffeine}
 import uk.gov.hmrc.sdecthreadinfoapi.exceptions.ThreadReferenceNotFoundException
-import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapi.model.{ThreadReference, ThreadStatus}
 import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapi.utils.ThreadStatusConstants
 
 import java.time.{LocalDate, LocalDateTime}
 import javax.inject.Singleton
@@ -43,7 +42,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
       ThreadReference(
         id = "1",
         threadReference = "THREAD-001",
-        status = ThreadStatusConstants.ACTIVE,
+        status = ThreadStatus.Active,
         createdTimeStamp = LocalDateTime.now().minusDays(2),
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(3),
         threadExpiryDate = LocalDate.now().plusDays(28),
@@ -55,7 +54,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
       ThreadReference(
         id = "2",
         threadReference = "THREAD-002",
-        status = ThreadStatusConstants.DRAFT,
+        status = ThreadStatus.Draft,
         createdTimeStamp = LocalDateTime.now().minusDays(1),
         lastUpdatedTimeStamp = LocalDateTime.now().minusHours(2),
         threadExpiryDate = LocalDate.now().plusDays(28),

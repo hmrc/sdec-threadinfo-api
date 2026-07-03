@@ -20,9 +20,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
+import uk.gov.hmrc.sdecthreadinfoapi.model.{ThreadReference, ThreadStatus}
 import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
-import uk.gov.hmrc.sdecthreadinfoapi.utils.ThreadStatusConstants
 
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.Future
@@ -32,7 +31,7 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
   private val threadReference = ThreadReference(
     id = "1",
     threadReference = "THREAD-001",
-    status = ThreadStatusConstants.ACTIVE,
+    status = ThreadStatus.Active,
     createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
     lastUpdatedTimeStamp = LocalDateTime.parse("2026-07-02T08:05:23"),
     threadExpiryDate = LocalDate.parse("2026-07-30"),
