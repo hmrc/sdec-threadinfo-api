@@ -40,7 +40,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
   private def seedDummyData(): Unit = {
     insertThreadReference(
       ThreadReference(
-        id = "1",
+        id = "123456ABCDEF",
         threadReference = "THREAD-001",
         status = ThreadStatus.Active,
         createdTimeStamp = LocalDateTime.now().minusDays(2),
@@ -52,7 +52,7 @@ class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
 
     insertThreadReference(
       ThreadReference(
-        id = "2",
+        id = "DASISTGUT123",
         threadReference = "THREAD-002",
         status = ThreadStatus.Draft,
         createdTimeStamp = LocalDateTime.now().minusDays(1),

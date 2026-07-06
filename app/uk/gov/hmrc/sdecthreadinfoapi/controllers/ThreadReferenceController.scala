@@ -20,7 +20,10 @@ import jakarta.inject.Inject
 import play.api.libs.json.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import uk.gov.hmrc.sdecthreadinfoapi.exceptions.ThreadReferenceNotFoundException
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{
+  InvalidThreadReferenceException,
+  ThreadReferenceNotFoundException
+}
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
 
@@ -39,8 +42,12 @@ class ThreadReferenceController @Inject() (
       threadReferenceService
         .getThreadInfoByThreadId(threadId)
         .map(tr => Ok(Json.toJson(tr)))
-        .recover { case e: ThreadReferenceNotFoundException =>
-          NotFound(Json.obj("message" -> e.getMessage))
+        .recover {
+          case e: InvalidThreadReferenceException =>
+            BadRequest(Json.obj("message" -> e.getMessage))
+
+          case e: ThreadReferenceNotFoundException =>
+            NotFound(Json.obj("message" -> e.getMessage))
         }
     }
   }

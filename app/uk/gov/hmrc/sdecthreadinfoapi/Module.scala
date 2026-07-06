@@ -40,6 +40,8 @@ class Module extends AppModule:
           classOf[ThreadReferenceRepository]
         )
         ::
-        bind[ThreadReferenceServiceAlgebra].to(classOf[ThreadReferenceService])
+        bind[ThreadReferenceServiceAlgebra].to(
+          classOf[ThreadReferenceService]
+        )
         ::
         Nil

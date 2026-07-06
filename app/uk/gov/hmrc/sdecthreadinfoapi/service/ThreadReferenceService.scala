@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapi.service
 
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.InvalidThreadReferenceException
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
 
@@ -27,6 +28,12 @@ class ThreadReferenceService @Inject() (
     threadReferenceRepository: ThreadReferenceRepositoryAlgebra
 ) extends ThreadReferenceServiceAlgebra {
 
-  def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] =
-    threadReferenceRepository.getByThreadReference(threadId)
+  private val threadReferencePattern = "^[A-Z0-9]{12}$".r
+
+  override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] =
+    if (threadReferencePattern.matches(threadId)) {
+      threadReferenceRepository.getByThreadReference(threadId)
+    } else {
+      Future.failed(InvalidThreadReferenceException(threadId))
+    }
 }
