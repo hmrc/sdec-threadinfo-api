@@ -21,7 +21,10 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
 import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
-import uk.gov.hmrc.sdecthreadinfoapi.exceptions.ThreadReferenceNotFoundException
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{
+  InvalidThreadReferenceException,
+  ThreadReferenceNotFoundException
+}
 import uk.gov.hmrc.sdecthreadinfoapi.model.{ThreadReference, ThreadStatus}
 import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
 
@@ -32,7 +35,7 @@ import scala.concurrent.Future
 class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
 
   private val threadReference = ThreadReference(
-    id = "1",
+    id = "123456ABCDEF",
     threadReference = "THREAD-001",
     status = ThreadStatus.Active,
     createdTimeStamp = LocalDateTime.parse("2026-06-30T11:05:23"),
@@ -43,8 +46,12 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
 
   private val threadReferenceService = new ThreadReferenceServiceAlgebra {
     override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] =
-      if (threadId == "1") Future.successful(threadReference)
-      else Future.failed(ThreadReferenceNotFoundException(threadId))
+      threadId match {
+        case "123456ABCDEF" => Future.successful(threadReference)
+        case "ZZZZZZZZZZZZ" =>
+          Future.failed(ThreadReferenceNotFoundException(threadId))
+        case "999" => Future.failed(InvalidThreadReferenceException("999"))
+      }
   }
 
   private val controller =
@@ -53,10 +60,10 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
       threadReferenceService
     )(ExecutionContext.global)
 
-  "GET /thread-reference/1" should {
+  "GET /thread-reference/123456ABCDEF" should {
     "return 200" in {
-      val fakeRequest = FakeRequest("GET", "/thread-reference/1")
-      val result      = controller.getThreadReference("1")(fakeRequest)
+      val fakeRequest = FakeRequest("GET", "/thread-reference/123456ABCDEF")
+      val result      = controller.getThreadReference("123456ABCDEF")(fakeRequest)
 
       status(result) shouldBe Status.OK
 
@@ -67,17 +74,30 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "GET /thread-reference/999" should {
+  "GET /thread-reference/ZZZZZZZZZZZZ" should {
     "return 404" in {
-      val fakeRequest = FakeRequest("GET", "/thread-reference/999")
-      val result      = controller.getThreadReference("999")(fakeRequest)
+      val fakeRequest = FakeRequest("GET", "/thread-reference/ZZZZZZZZZZZZ")
+      val result      = controller.getThreadReference("ZZZZZZZZZZZZ")(fakeRequest)
 
       status(result) shouldBe Status.NOT_FOUND
 
       val json = contentAsJson(result)
 
       (json \ "message").as[String] shouldBe
-        "Thread reference [999] not found"
+        "Thread reference [ZZZZZZZZZZZZ] not found"
+    }
+  }
+
+  "GET /thread-reference/999" should {
+    "return 400" in {
+      val fakeRequest = FakeRequest("GET", "/thread-reference/999")
+      val result      = controller.getThreadReference("999")(fakeRequest)
+
+      status(result) shouldBe Status.BAD_REQUEST
+
+      val json = contentAsJson(result)
+      (json \ "message").as[String] shouldBe
+        "Thread reference [999] must be exactly 12 characters long and contain only A-Z and 0-9"
     }
   }
 }

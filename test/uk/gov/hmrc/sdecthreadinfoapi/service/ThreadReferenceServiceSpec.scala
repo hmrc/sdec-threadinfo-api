@@ -20,6 +20,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.InvalidThreadReferenceException
 import uk.gov.hmrc.sdecthreadinfoapi.model.{ThreadReference, ThreadStatus}
 import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
 
@@ -55,7 +56,16 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
 
   "getThreadInfoByThreadId" should {
     "return the thread reference from the repository" in {
-      service.getThreadInfoByThreadId("1").futureValue shouldBe threadReference
+      service
+        .getThreadInfoByThreadId("ABCD1234EFGH")
+        .futureValue shouldBe threadReference
+    }
+
+    "fail for an invalid thread reference" in {
+      service
+        .getThreadInfoByThreadId("INVALID")
+        .failed
+        .futureValue shouldBe a[InvalidThreadReferenceException]
     }
   }
 }
