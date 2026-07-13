@@ -51,7 +51,7 @@ class ThreadReferenceController @Inject() (
             BadRequest(Json.obj("message" -> e.getMessage))
 
           case e: ThreadReferenceNotFoundException =>
-            logger.warn(s"Thread Referne ID $threadId was not found")
+            logger.warn(s"Thread Reference ID $threadId was not found")
             NotFound(Json.obj("message" -> e.getMessage))
         }
     }
