@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.sdecthreadinfoapi.service
 
+import play.api.Logging
 import uk.gov.hmrc.sdecthreadinfoapi.exceptions.InvalidThreadReferenceException
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
@@ -26,14 +27,17 @@ import scala.concurrent.Future
 @Singleton
 class ThreadReferenceService @Inject() (
     threadReferenceRepository: ThreadReferenceRepositoryAlgebra
-) extends ThreadReferenceServiceAlgebra {
+) extends ThreadReferenceServiceAlgebra
+    with Logging {
 
   private val threadReferencePattern = "^[A-Z0-9]{12}$".r
 
-  override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] =
+  override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] = {
+    logger.info(s"Checking if $threadId exists in the database")
     if (threadReferencePattern.matches(threadId)) {
       threadReferenceRepository.getByThreadReference(threadId)
     } else {
       Future.failed(InvalidThreadReferenceException(threadId))
     }
+  }
 }

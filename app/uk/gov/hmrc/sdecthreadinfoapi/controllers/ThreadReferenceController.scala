@@ -17,6 +17,7 @@
 package uk.gov.hmrc.sdecthreadinfoapi.controllers
 
 import jakarta.inject.Inject
+import play.api.Logging
 import play.api.libs.json.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -35,18 +36,22 @@ class ThreadReferenceController @Inject() (
     cc: ControllerComponents,
     threadReferenceService: ThreadReferenceServiceAlgebra
 )(implicit ec: ExecutionContext)
-    extends BackendController(cc) {
+    extends BackendController(cc)
+    with Logging {
 
   def getThreadReference(threadId: String): Action[AnyContent] = {
+    logger.info(s"getThreadReference: Getting ThreadInformation for $threadId")
     Action.async { implicit request =>
       threadReferenceService
         .getThreadInfoByThreadId(threadId)
         .map(tr => Ok(Json.toJson(tr)))
         .recover {
           case e: InvalidThreadReferenceException =>
+            logger.warn(s"Thread Reference ID $threadId was invalid")
             BadRequest(Json.obj("message" -> e.getMessage))
 
           case e: ThreadReferenceNotFoundException =>
+            logger.warn(s"Thread Referne ID $threadId was not found")
             NotFound(Json.obj("message" -> e.getMessage))
         }
     }
