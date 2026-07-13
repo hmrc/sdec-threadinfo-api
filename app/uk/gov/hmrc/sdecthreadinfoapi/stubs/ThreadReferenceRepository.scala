@@ -24,15 +24,11 @@ import uk.gov.hmrc.sdecthreadinfoapi.repository.ThreadReferenceRepositoryAlgebra
 import java.time.{LocalDate, LocalDateTime}
 import javax.inject.Singleton
 import scala.concurrent.Future
-import scala.concurrent.duration.*
 
 @Singleton
 class ThreadReferenceRepository extends ThreadReferenceRepositoryAlgebra {
 
   private val threadReferenceCache: Cache[String, ThreadReference] = Scaffeine()
-    .recordStats()
-    .expireAfterWrite(1.hour)
-    .maximumSize(500)
     .build[String, ThreadReference]()
 
   seedDummyData()
