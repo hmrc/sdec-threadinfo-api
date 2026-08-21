@@ -19,18 +19,24 @@ package uk.gov.hmrc.sdecthreadinfoapi.controllers
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
+import play.api.mvc.*
 import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Helpers}
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.sdecthreadinfoapi.controllers.actions.IdentifierAction
 import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{
   InvalidThreadReferenceException,
   ThreadReferenceNotFoundException
 }
+import uk.gov.hmrc.sdecthreadinfoapi.model.requests.IdentifierRequest
 import uk.gov.hmrc.sdecthreadinfoapi.model.{ThreadReference, ThreadStatus}
 import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
 
 import java.time.{LocalDate, LocalDateTime}
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
 
@@ -54,8 +60,29 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
       }
   }
 
+  private val identifierAction = new IdentifierAction {
+    override def parser: BodyParser[AnyContent] = stubBodyParser()
+
+    override def invokeBlock[A](
+        request: Request[A],
+        block: IdentifierRequest[A] => Future[Result]
+    ): Future[Result] = block(IdentifierRequest(request, "test-user-id"))
+
+    override protected def executionContext: ExecutionContext =
+      ExecutionContext.global
+  }
+
+  private val authConnector = new AuthConnector {
+    override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
+        hc: HeaderCarrier,
+        ec: ExecutionContext
+    ): Future[A] = ???
+  }
+
   private val controller =
     new ThreadReferenceController(
+      authConnector,
+      identifierAction,
       Helpers.stubControllerComponents(),
       threadReferenceService
     )(ExecutionContext.global)
