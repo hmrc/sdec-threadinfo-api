@@ -18,6 +18,10 @@ package uk.gov.hmrc.sdecthreadinfoapi
 
 import play.api.inject.{Binding, Module as AppModule}
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.sdecthreadinfoapi.controllers.actions.{
+  AuthenticatedIdentifierAction,
+  IdentifierAction
+}
 import uk.gov.hmrc.sdecthreadinfoapi.repository.*
 import uk.gov.hmrc.sdecthreadinfoapi.service.{
   ThreadReferenceService,
@@ -43,5 +47,7 @@ class Module extends AppModule:
         bind[ThreadReferenceServiceAlgebra].to(
           classOf[ThreadReferenceService]
         )
+        ::
+        bind[IdentifierAction].to(classOf[AuthenticatedIdentifierAction])
         ::
         Nil
