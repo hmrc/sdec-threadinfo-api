@@ -20,7 +20,9 @@ import jakarta.inject.Inject
 import play.api.Logging
 import play.api.libs.json.*
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.sdecthreadinfoapi.controllers.actions.IdentifierAction
 import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{
   InvalidThreadReferenceException,
   ThreadReferenceNotFoundException
@@ -33,15 +35,22 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ThreadReferenceController @Inject() (
+    val authConnector: AuthConnector,
+    identity: IdentifierAction,
     cc: ControllerComponents,
     threadReferenceService: ThreadReferenceServiceAlgebra
 )(implicit ec: ExecutionContext)
     extends BackendController(cc)
+    with AuthorisedFunctions
     with Logging {
 
   def getThreadReference(threadId: String): Action[AnyContent] = {
     logger.info(s"getThreadReference: Getting ThreadInformation for $threadId")
-    Action.async { implicit request =>
+    identity.async { implicit request =>
+      request.headers.headers.foreach { case (name, value) =>
+        logger.warn(s"Header: $name = $value")
+      }
+      logger.info(s"User ID is [${request.userId}]")
       threadReferenceService
         .getThreadInfoByThreadId(threadId)
         .map(tr => Ok(Json.toJson(tr)))
