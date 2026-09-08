@@ -23,10 +23,7 @@ import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.sdecthreadinfoapi.controllers.actions.IdentifierAction
-import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{
-  InvalidThreadReferenceException,
-  ThreadReferenceNotFoundException
-}
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{InvalidThreadReferenceException, ThreadReferenceNotFoundException}
 import uk.gov.hmrc.sdecthreadinfoapi.model.ThreadReference
 import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
 
@@ -35,10 +32,10 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ThreadReferenceController @Inject() (
-    val authConnector: AuthConnector,
-    identity: IdentifierAction,
-    cc: ControllerComponents,
-    threadReferenceService: ThreadReferenceServiceAlgebra
+  val authConnector:      AuthConnector,
+  identity:               IdentifierAction,
+  cc:                     ControllerComponents,
+  threadReferenceService: ThreadReferenceServiceAlgebra
 )(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with AuthorisedFunctions

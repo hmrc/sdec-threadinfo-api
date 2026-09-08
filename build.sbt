@@ -18,16 +18,14 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(
     Compile / scalafmtOnCompile := true,
-    Test / scalafmtOnCompile    := true,
-    PlayKeys.playDefaultPort    := 4001,
+    Test / scalafmtOnCompile := true,
+    PlayKeys.playDefaultPort := 4001,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     compilerSettings
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources",
-    Test / unmanagedSourceDirectories := (Test / baseDirectory)(base =>
-      Seq(base / "test", base / "test-common")
-    ).value,
+    Test / unmanagedSourceDirectories := (Test / baseDirectory)(base => Seq(base / "test", base / "test-common")).value,
     Test / unmanagedResourceDirectories := Seq(
       baseDirectory.value / "test-resources"
     )
