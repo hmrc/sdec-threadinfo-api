@@ -46,41 +46,19 @@ class AuthenticatedIdentifierAction @Inject() (
   ): Future[Result] = {
 
     implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+      HeaderCarrierConverter.fromRequest(request)
 
     authorised().retrieve(Retrievals.internalId) {
       _.map { internalId =>
         block(IdentifierRequest(request, internalId))
       }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
     } recover {
-      case _: NoActiveSession =>
-        logger.warn(s"No Active Session")
+      case e: NoActiveSession =>
+        logger.warn(s"No Active Session: ${e.reason}")
         Unauthorized
-      case _: AuthorisationException =>
-        logger.warn(s"Not authorised")
+      case e: AuthorisationException =>
+        logger.warn(s"Not authorised: ${e.reason}")
         Unauthorized
-    }
-  }
-}
-
-class SessionIdentifierAction @Inject() (
-    val parser: BodyParsers.Default
-)(implicit val executionContext: ExecutionContext)
-    extends IdentifierAction {
-
-  override def invokeBlock[A](
-      request: Request[A],
-      block: IdentifierRequest[A] => Future[Result]
-  ): Future[Result] = {
-
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
-    hc.sessionId match {
-      case Some(session) =>
-        block(IdentifierRequest(request, session.value))
-      case None =>
-        Future.successful(Unauthorized)
     }
   }
 }
