@@ -33,11 +33,7 @@ import uk.gov.hmrc.sdecthreadinfoapi.model.requests.IdentifierRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthenticatedIdentifierActionSpec
-    extends AnyWordSpec
-    with Matchers
-    with ScalaFutures
-    with MockitoSugar {
+class AuthenticatedIdentifierActionSpec extends AnyWordSpec with Matchers with ScalaFutures with MockitoSugar {
 
   implicit val ec: ExecutionContext =
     ExecutionContext.global

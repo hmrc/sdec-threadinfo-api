@@ -18,36 +18,30 @@ package uk.gov.hmrc.sdecthreadinfoapi
 
 import play.api.inject.{Binding, Module as AppModule}
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.sdecthreadinfoapi.controllers.actions.{
-  AuthenticatedIdentifierAction,
-  IdentifierAction
-}
+import uk.gov.hmrc.sdecthreadinfoapi.controllers.actions.{AuthenticatedIdentifierAction, IdentifierAction}
 import uk.gov.hmrc.sdecthreadinfoapi.repository.*
-import uk.gov.hmrc.sdecthreadinfoapi.service.{
-  ThreadReferenceService,
-  ThreadReferenceServiceAlgebra
-}
+import uk.gov.hmrc.sdecthreadinfoapi.service.{ThreadReferenceService, ThreadReferenceServiceAlgebra}
 import uk.gov.hmrc.sdecthreadinfoapi.stubs.ThreadReferenceRepository
 
 import java.time.Clock
 
 class Module extends AppModule:
 
-    override def bindings(
-        environment: Environment,
-        configuration: Configuration
-    ): Seq[Binding[_]] =
-      bind[Clock].toInstance(
-        Clock.systemDefaultZone
-      ) :: // inject if current time needs to be controlled in unit tests
-        bind[ThreadReferenceRepositoryAlgebra].to(
-          classOf[ThreadReferenceRepository]
-        )
-        ::
-        bind[ThreadReferenceServiceAlgebra].to(
-          classOf[ThreadReferenceService]
-        )
-        ::
-        bind[IdentifierAction].to(classOf[AuthenticatedIdentifierAction])
-        ::
-        Nil
+  override def bindings(
+    environment:   Environment,
+    configuration: Configuration
+  ): Seq[Binding[_]] =
+    bind[Clock].toInstance(
+      Clock.systemDefaultZone
+    ) :: // inject if current time needs to be controlled in unit tests
+      bind[ThreadReferenceRepositoryAlgebra].to(
+        classOf[ThreadReferenceRepository]
+      )
+      ::
+      bind[ThreadReferenceServiceAlgebra].to(
+        classOf[ThreadReferenceService]
+      )
+      ::
+      bind[IdentifierAction].to(classOf[AuthenticatedIdentifierAction])
+      ::
+      Nil
