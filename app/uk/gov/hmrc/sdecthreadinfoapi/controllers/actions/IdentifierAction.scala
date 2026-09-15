@@ -33,16 +33,16 @@ trait IdentifierAction
     with ActionFunction[Request, IdentifierRequest]
 
 class AuthenticatedIdentifierAction @Inject() (
-    override val authConnector: AuthConnector,
-    val parser: BodyParsers.Default
+  override val authConnector: AuthConnector,
+  val parser:                 BodyParsers.Default
 )(implicit val executionContext: ExecutionContext)
     extends IdentifierAction
     with AuthorisedFunctions
     with Logging {
 
   override def invokeBlock[A](
-      request: Request[A],
-      block: IdentifierRequest[A] => Future[Result]
+    request: Request[A],
+    block:   IdentifierRequest[A] => Future[Result]
   ): Future[Result] = {
 
     implicit val hc: HeaderCarrier =

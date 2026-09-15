@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 @Singleton
 class ThreadReferenceService @Inject() (
-    threadReferenceRepository: ThreadReferenceRepositoryAlgebra
+  threadReferenceRepository: ThreadReferenceRepositoryAlgebra
 ) extends ThreadReferenceServiceAlgebra
     with Logging {
 
@@ -34,7 +34,7 @@ class ThreadReferenceService @Inject() (
 
   override def getThreadInfoByThreadId(threadId: String): Future[ThreadReference] = {
     logger.info(s"Checking if $threadId exists in the database")
-    if (threadReferencePattern.matches(threadId)) {
+    if threadReferencePattern.matches(threadId) then {
       threadReferenceRepository.getByThreadReference(threadId)
     } else {
       Future.failed(InvalidThreadReferenceException(threadId))

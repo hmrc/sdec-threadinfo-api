@@ -16,5 +16,4 @@
 
 package uk.gov.hmrc.sdecthreadinfoapi.exceptions
 
-case class ThreadReferenceNotFoundException(id: String)
-    extends RuntimeException(s"Thread reference [$id] not found")
+case class ThreadReferenceNotFoundException(id: String) extends RuntimeException(s"Thread reference [$id] not found")

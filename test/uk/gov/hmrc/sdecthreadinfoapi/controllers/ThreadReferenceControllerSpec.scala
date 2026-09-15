@@ -27,10 +27,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.sdecthreadinfoapi.controllers.actions.IdentifierAction
-import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{
-  InvalidThreadReferenceException,
-  ThreadReferenceNotFoundException
-}
+import uk.gov.hmrc.sdecthreadinfoapi.exceptions.{InvalidThreadReferenceException, ThreadReferenceNotFoundException}
 import uk.gov.hmrc.sdecthreadinfoapi.model.requests.IdentifierRequest
 import uk.gov.hmrc.sdecthreadinfoapi.model.{ThreadReference, ThreadStatus}
 import uk.gov.hmrc.sdecthreadinfoapi.service.ThreadReferenceServiceAlgebra
@@ -64,8 +61,8 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
     override def parser: BodyParser[AnyContent] = stubBodyParser()
 
     override def invokeBlock[A](
-        request: Request[A],
-        block: IdentifierRequest[A] => Future[Result]
+      request: Request[A],
+      block:   IdentifierRequest[A] => Future[Result]
     ): Future[Result] = block(IdentifierRequest(request, "test-user-id"))
 
     override protected def executionContext: ExecutionContext =
@@ -74,8 +71,8 @@ class ThreadReferenceControllerSpec extends AnyWordSpec with Matchers {
 
   private val authConnector = new AuthConnector {
     override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
-        hc: HeaderCarrier,
-        ec: ExecutionContext
+      hc: HeaderCarrier,
+      ec: ExecutionContext
     ): Future[A] = ???
   }
 

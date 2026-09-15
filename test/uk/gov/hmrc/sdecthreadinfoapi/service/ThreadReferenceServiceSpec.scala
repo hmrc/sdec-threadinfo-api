@@ -42,12 +42,12 @@ class ThreadReferenceServiceSpec extends AnyWordSpec with Matchers {
   private val repository = new ThreadReferenceRepositoryAlgebra {
 
     override def insertThreadReference(
-        threadRef: ThreadReference
+      threadRef: ThreadReference
     ): Future[Unit] =
       Future.successful(())
 
     override def getByThreadReference(
-        id: String
+      id: String
     ): Future[ThreadReference] =
       Future.successful(threadReference)
   }
